@@ -11,7 +11,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('signup-password').value;
 
     try {
-        const response = await fetch('http://localhost:3000/user/signup', {
+        const response = await fetch('http://localhost:3003/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('signin-password').value;
 
     try {
-        const response = await fetch('http://localhost:3000/user/signin', {
+        const response = await fetch('http://localhost:3003/user/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ document.getElementById('todo-form').addEventListener('submit', async (e) => {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch('http://localhost:3000/todo', {
+        const response = await fetch('http://localhost:3003/todo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ document.getElementById('todo-form').addEventListener('submit', async (e) => {
 async function loadTodos() {
     const token = localStorage.getItem('token');
     try {
-        const response = await fetch('http://localhost:3000/todo', {
+        const response = await fetch('http://localhost:3003/todo', {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
@@ -158,7 +158,7 @@ async function loadTodos() {
 async function completeTodo(id, completed) {
     const token = localStorage.getItem('token');
     try {
-        await fetch(`http://localhost:3000/todo/${id}`, {
+        await fetch(`http://localhost:3003/todo/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
