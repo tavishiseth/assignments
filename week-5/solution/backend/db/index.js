@@ -2,9 +2,13 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 // Connect to MongoDB
+// tavishiseth_db_user
+// Kushalatolia@123
+// mongodb+srv://tavishiseth_db_user:Kushalatolia@123@cluster0.sleqxbs.mongodb.net/
 const connectToDatabase = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        // await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect("mongodb+srv://tavishiseth_db_user:Kushalatolia@123@cluster0.sleqxbs.mongodb.net/todo-app-database");
         console.log("Database connected");
     } catch (error) {
         console.error("Database connection failed:", error);

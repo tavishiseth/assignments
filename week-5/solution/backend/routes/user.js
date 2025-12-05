@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const { authenticateJwt, SECRET } = require("../middleware/user");
 const { User } = require("../db");
 const router = express.Router();
+//const app = express()
+// app.use(express.json())
 
 router.post('/signup', async (req, res) => {
   const { username, password } = req.body;
@@ -14,6 +16,12 @@ router.post('/signup', async (req, res) => {
 
     const newUser = new User({ username, password });
     await newUser.save();
+    /*
+       await User.insertOne({
+        username: username,
+        password: password
+      })
+    */
 
     const token = jwt.sign({ userId: newUser._id }, SECRET, { expiresIn: '1h' }); 
     res.json({ message: 'User created successfully', token });
@@ -26,6 +34,13 @@ router.post('/signin', async (req, res) => {
   const { username, password } = req.body; 
   try {
     const user = await User.findOne({ username, password });
+    /* 
+       const user = await User.findOne({
+        username: username,
+        password: password
+      })
+    */
+
     if (user) {
       const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: '1h' });
 
