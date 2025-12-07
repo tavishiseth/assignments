@@ -87,7 +87,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
             // The CSS property display: none; is used to completely hide an HTML element from the document.
             document.getElementById('todo-container').style.display = 'block';
             document.getElementById('response-message').innerHTML = 
-                `Logged in successfully. <a href="#" id="logout-link">Logout</a>`;
+                `Logged in successfully.`;
             loadTodos();
 
             // Add event listener for the logout link
