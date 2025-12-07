@@ -7,7 +7,15 @@ const router = express.Router();
 // app.use(express.json())
 
 router.post('/signup', async (req, res) => {
+    /*
+      receive req.body from script.js (submit button of signup)
+      {
+          username: username (from signup-username),
+          password: password (from signup-password)
+      }
+  */
   const { username, password } = req.body;
+  // check if username already exists
   try {
     const user = await User.findOne({ username });
     if (user) {
@@ -35,7 +43,7 @@ router.post('/signin', async (req, res) => {
   try {
     const user = await User.findOne({ username, password });
     /* 
-       const user = await User.findOne({
+       const user = await User.create({
         username: username,
         password: password
       })
