@@ -3,6 +3,8 @@
 const { Router } = require("express");
 const userRouter = Router();
 const { User } = require("../db/db");
+const { Purchase } = require("../db/db");
+const { Course } = require("../db/db");
 const { z } = require('zod');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -84,17 +86,54 @@ userRouter.post('/login', async (req, res) => {
   }
 });
 
-userRouter.get('/courses', (req, res) => {
+userRouter.get('/courses', async (req, res) => {
     // logic to list all courses
-    res.json("hello")
+    const courses = await Course.find({});
+
+    res.json({
+        courses: courses 
+    })
 });
 
-userRouter.post('/courses/:courseId', (req, res) => {
+userRouter.post('/courses/:courseId', authenticateUserJwt, async (req, res) => {
     // logic to purchase a course
+    const userId = req.userId
+    const courseId = req.params.courseId
+
+        const course = await Course.findOne({
+        _id: courseId
+    });
+
+    if (!course) {
+        return res.status(404).json({
+            message: "Course not found"
+        });
+    }
+
+    try {
+        const newPurchase = await Purchase.create({
+        userId: userId,
+        courseId: courseId
+        })
+
+        res.json({ message: 'Course purchased successfully', courseId: newPurchase._id });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating course', error: error.message });
+    }
+
 });
 
-userRouter.get('/purchasedCourses', (req, res) => {
+userRouter.get('/purchasedCourses', authenticateUserJwt, async (req, res) => {
     // logic to view purchased courses
+    const userId = req.userId
+
+    const purchasedCourses = await Purchase.find({
+        userId: userId,
+    });
+
+    res.json({
+        courses: purchasedCourses,
+    });
 });
 
 module.exports = {
