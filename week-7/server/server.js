@@ -12,14 +12,14 @@ const app = express();
 
 app.use(express.json());
 
-const secret = process.env.JWT_SECRERT;  // This should be in an environment variable in a real application
-const port = process.env.PORT;
+const secret = process.env.JWT_SECRET;  // This should be in an environment variable in a real application
+const PORT = process.env.PORT || 3000;
 
 app.use("/users", userRouter)
 app.use("/admin", adminRouter)
 
-app.listen(port, () => {
+app.listen(PORT, () => {
     // Connect to MongoDB
     mongoose.connect(process.env.MONGO_URI); 
-    console.log('Server is listening on port 3000');
+    console.log(`Server running on port ${PORT}`);
 });

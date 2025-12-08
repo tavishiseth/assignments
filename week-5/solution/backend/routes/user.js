@@ -49,7 +49,7 @@ router.post('/signup', async (req, res) => {
     const token = jwt.sign({ userId: newUser._id }, SECRET, { expiresIn: '1h' }); 
     res.json({ message: 'User created successfully', token });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating user', error });
+    res.status(500).json({ message: 'Error creating user', error: error.message });
   }
 });
 
@@ -70,7 +70,7 @@ router.post('/signin', async (req, res) => {
     res.json({ message: "Logged in successfully", token });
 
   } catch (error) {
-    res.status(500).json({ message: "Error signing in", error });
+    res.status(500).json({ message: "Error signing in", error: error.message });
   }
 });
 
