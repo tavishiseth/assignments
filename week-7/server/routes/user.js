@@ -2,9 +2,7 @@
 
 const { Router } = require("express");
 const userRouter = Router();
-const { User } = require("../db/db");
-const { Purchase } = require("../db/db");
-const { Course } = require("../db/db");
+const { User, Purchase, Course } = require("../db/db");
 const { z } = require('zod');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -131,8 +129,13 @@ userRouter.get('/purchasedCourses', authenticateUserJwt, async (req, res) => {
         userId: userId,
     });
 
+    const coursesData = await Course.find({
+        _id: { $in: purchasedCourses.map(x => x.courseId)}
+    })
+
     res.json({
         courses: purchasedCourses,
+        coursesData: coursesData
     });
 });
 
