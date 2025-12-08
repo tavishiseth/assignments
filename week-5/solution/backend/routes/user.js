@@ -17,7 +17,7 @@ router.post('/signup', async (req, res) => {
 
   if (!result.success) {
     res.json({
-      message: "Incorrect format: " + result.error
+      message: "Incorrect format: " + result.error.issues[0].message
     })
     return
   }
