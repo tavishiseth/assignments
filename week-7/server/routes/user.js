@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
-const SECRET = process.env.JWT_SECRET;
+const { SECRET, authenticateUserJwt } = require("../middleware/user")
 
 userRouter.post('/signup', async (req, res) => {
     // logic to sign up user

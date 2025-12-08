@@ -3,12 +3,13 @@
 const { Router } = require("express");
 const adminRouter = Router();
 const { Admin } = require("../db/db");
+const { Course } = require("../db/db");
 const { z } = require('zod');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
-const SECRET = process.env.JWT_SECRET;
+const { SECRET, authenticateAdminJwt } = require("../middleware/admin")
 
 adminRouter.post('/signup', async (req, res) => {
     // logic to sign up admin
@@ -84,16 +85,80 @@ adminRouter.post('/login', async (req, res) => {
   }
 });
 
-adminRouter.post('/courses', (req, res) => {
+adminRouter.post('/courses', authenticateAdminJwt, async (req, res) => {
     // logic to create a course
+    const adminId = req.userId
+    const { title, description, imageUrl, price } = req.body
+
+    try {
+        const course = await Course.findOne({ title });
+        if (course) {
+        return res.status(403).json({ message: 'Course already exists' });
+        }
+
+        const newCourse = await Course.create({
+            title: title,
+            description: description,
+            imageUrl: imageUrl,
+            price: price,
+            creatorId: adminId
+        })
+
+        res.json({ message: 'Course created successfully', courseId: newCourse._id });
+        } catch (error) {
+        res.status(500).json({ message: 'Error creating course', error: error.message });
+    }
 });
 
-adminRouter.put('/courses/:courseId', (req, res) => {
+adminRouter.put('/courses/:courseId', authenticateAdminJwt, async (req, res) => {
     // logic to edit a course
+    const adminId = req.userId
+    const courseId = req.params.courseId
+    const { title, description, imageUrl, price } = req.body
+
+    const course = await Course.findOne({
+        _id: courseId
+    });
+
+    if (!course) {
+        return res.status(404).json({
+            message: "Course not found"
+        });
+    }
+
+    const updatedCourse = await Course.findOneAndUpdate({
+        _id: courseId,
+        creatorId: adminId
+    }, {
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        price: price
+    })
+
+    if (!updatedCourse) {
+        return res.status(404).json({
+            message: "Course not found or not owned by admin"
+        });
+    }
+
+    res.json({
+        message: "Course updated",
+        courseId: updatedCourse._id
+    })
 });
 
-adminRouter.get('/courses', (req, res) => {
+adminRouter.get('/courses', authenticateAdminJwt, async (req, res) => {
     // logic to get all courses
+    const adminId = req.userId
+
+    const courses = await Course.find({
+        creatorId: adminId
+    })
+
+    res.json({
+        courses: courses 
+    })
 });
 
 module.exports = {
