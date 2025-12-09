@@ -10,12 +10,30 @@ const AdminHome = () => {
     const token = localStorage.getItem("adminToken");
     setIsLoggedIn(!!token);
   }, []);
+  /*
+  Runs once when the component loads.
+  Looks for adminToken in localStorage.
+    If it exists → isLoggedIn = true
+    If not → isLoggedIn = false
+  */
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     setIsLoggedIn(false);
   };
+  /*
+  Removes the admin token from local storage.
+  Updates isLoggedIn to false, which re-renders the component and shows login/register forms again.
+  */
 
+  /*
+  Admin logged in (isLoggedIn === true):
+    Logout button
+    AdminCourses component (to manage or view courses)
+
+  Admin not logged in (isLoggedIn === false):
+    AdminRegister and AdminLogin forms side by side
+  */
   return (
     <div style={{ border: "1px solid #ccc", padding: "20px" }}>
       <h2>Admin Dashboard</h2>
