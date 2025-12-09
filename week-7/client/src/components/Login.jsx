@@ -22,9 +22,10 @@ const Login = () => {
 
       setMessage(response.data.message);
 
-      if (response.data.token) {
+    if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-      }
+        window.location.reload(); // simple way to refresh Home.jsx state
+    }
     } catch (error) {
       setMessage(error.response?.data?.message || "Login failed");
     }

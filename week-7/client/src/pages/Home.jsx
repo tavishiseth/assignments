@@ -1,67 +1,56 @@
-// implement the home page UI here.
-import React from "react";
-
-// components imports
+import React, { useState, useEffect } from "react";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import Courses from "../components/Courses";
 
 const Home = () => {
-  return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Welcome to the Learning Platform</h1>
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-      <div style={styles.cardContainer}>
-        <div style={styles.card}>
-          <h2>Login</h2>
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Welcome to Online Courses</h2>
+
+      {isLoggedIn ? (
+        <div>
+          <button onClick={handleLogout} style={styles.logoutButton}>
+            Logout
+          </button>
+          <Courses />
+        </div>
+      ) : (
+        <div style={styles.authContainer}>
+          <Register />
           <Login />
         </div>
-
-        <div style={styles.card}>
-          <h2>Register</h2>
-          <Register />
-        </div>
-      </div>
-
-      <div style={styles.coursesSection}>
-        <h2>Available Courses</h2>
-        <Courses />
-      </div>
+      )}
     </div>
   );
 };
 
 const styles = {
-  container: {
-    width: "80%",
-    margin: "0 auto",
-    paddingTop: "40px",
-    textAlign: "center",
-  },
-
-  title: {
-    fontSize: "32px",
-    marginBottom: "30px",
-  },
-
-  cardContainer: {
+  authContainer: {
     display: "flex",
-    justifyContent: "space-around",
-    marginBottom: "40px",
-    flexWrap: "wrap",
+    gap: "50px",
+    marginTop: "20px",
   },
-
-  card: {
-    width: "350px",
-    padding: "20px",
-    borderRadius: "10px",
-    background: "#f7f7f7",
-    boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
+  logoutButton: {
+    padding: "10px 15px",
+    background: "#f44336",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
     marginBottom: "20px",
-  },
-
-  coursesSection: {
-    marginTop: "30px",
   },
 };
 
