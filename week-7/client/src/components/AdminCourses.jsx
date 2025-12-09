@@ -3,11 +3,16 @@ import axios from "axios";
 
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    imageUrl: "",
+    price: "",
+  });
+
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
   const token = localStorage.getItem("adminToken");
 
@@ -27,25 +32,50 @@ const AdminCourses = () => {
     }
   };
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const createCourse = async () => {
-    if (!token) {
-      setMessage("Please login as admin");
-      return;
-    }
+    if (!token) return setMessage("Please login as admin");
     try {
       const res = await axios.post(
         "http://localhost:3000/admin/courses",
-        { title, description, imageUrl, price },
+        form,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage(res.data.message);
-      setTitle("");
-      setDescription("");
-      setImageUrl("");
-      setPrice("");
+      setForm({ title: "", description: "", imageUrl: "", price: "" });
       fetchCourses();
     } catch (err) {
       setMessage(err.response?.data?.message || "Error creating course");
+    }
+  };
+
+  const startEdit = (course) => {
+    setEditingCourseId(course._id);
+    setForm({
+      title: course.title,
+      description: course.description,
+      imageUrl: course.imageUrl,
+      price: course.price,
+    });
+  };
+
+  const updateCourse = async () => {
+    if (!token || !editingCourseId) return;
+    try {
+      const res = await axios.put(
+        `http://localhost:3000/admin/courses/${editingCourseId}`,
+        form,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage(res.data.message);
+      setEditingCourseId(null);
+      setForm({ title: "", description: "", imageUrl: "", price: "" });
+      fetchCourses();
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Error updating course");
     }
   };
 
@@ -54,34 +84,43 @@ const AdminCourses = () => {
       <h3>Admin Dashboard</h3>
       {message && <p>{message}</p>}
 
-      <h4>Create Course</h4>
+      <h4>{editingCourseId ? "Edit Course" : "Create Course"}</h4>
       <input
+        name="title"
         placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        value={form.title}
+        onChange={handleChange}
       />
       <input
+        name="description"
         placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        value={form.description}
+        onChange={handleChange}
       />
       <input
+        name="imageUrl"
         placeholder="Image URL"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
+        value={form.imageUrl}
+        onChange={handleChange}
       />
       <input
+        name="price"
         placeholder="Price"
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
+        value={form.price}
+        onChange={handleChange}
       />
-      <button onClick={createCourse}>Create Course</button>
+      {editingCourseId ? (
+        <button onClick={updateCourse}>Update Course</button>
+      ) : (
+        <button onClick={createCourse}>Create Course</button>
+      )}
 
       <h4>Your Courses</h4>
       <ul>
         {courses.map((c) => (
           <li key={c._id}>
-            {c.title} - ${c.price}
+            {c.title} - ${c.price}{" "}
+            <button onClick={() => startEdit(c)}>Edit</button>
           </li>
         ))}
       </ul>
