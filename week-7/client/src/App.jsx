@@ -1,6 +1,7 @@
 import React from "react";
 import Home from "./pages/Home";
 import AdminHome from "./pages/AdminHome";
+import Courses from "./components/Courses";
 
 function App() {
   return (
@@ -13,6 +14,10 @@ function App() {
         <div style={{ flex: 1 }}>
           <AdminHome /> {/* Admin view */}
         </div>
+      </div>
+      <div>
+        {/* Public Courses view */}
+        <Courses />  {/* fetchCourses() inside Courses will load courses from /users/courses */}
       </div>
     </div>
   );
