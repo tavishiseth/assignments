@@ -48,10 +48,16 @@ const Home = () => {
           <Courses />
         </div>
       ) : (
-        <div style={styles.authContainer}>
-          <Register />
-          <Login />
-        </div>
+        <>
+          <div style={styles.authContainer}>
+            <Register />
+            <Login />
+          </div>
+          <div>
+            {/* Public Courses view */}
+            <Courses />  {/* fetchCourses() inside Courses will load courses from /users/courses */}
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,23 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import AdminHome from "./pages/AdminHome";
-import Courses from "./components/Courses";
 
 function App() {
+  const [isAdminView, setIsAdminView] = useState(false);
+
+  // Automatically set view based on login state
+  useEffect(() => {
+    const adminToken = localStorage.getItem("adminToken");
+    const userToken = localStorage.getItem("token");
+
+    if (adminToken) {
+      setIsAdminView(true);  // admin logged in → show admin view
+    } else if (userToken) {
+      setIsAdminView(false); // user logged in → show user view
+    }
+  }, []); // runs only once when app loads
+
+  const toggleView = () => {
+    setIsAdminView(prev => !prev);
+  };
+
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>Online Courses Platform</h1>
-      <div style={{ display: "flex", gap: "50px" }}> {/* display: "flex" arranges the child <div> elements side by side horizontally. */}
-        <div style={{ flex: 1 }}> {/* flex: 1 means both columns take equal width in the flex container. */}
-          <Home /> {/* Regular user view */}
-        </div>
-        <div style={{ flex: 1 }}>
-          <AdminHome /> {/* Admin view */}
-        </div>
-      </div>
+
+      {/* Toggle button */}
+      <button
+        onClick={toggleView}
+        style={{
+          marginBottom: "20px",
+          padding: "10px 15px",
+          background: "#1976d2",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Switch to {isAdminView ? "User" : "Admin"} View
+      </button>
+
+      {/* Render view */}
       <div>
-        {/* Public Courses view */}
-        <Courses />  {/* fetchCourses() inside Courses will load courses from /users/courses */}
+        {isAdminView ? <AdminHome /> : <Home />}
       </div>
     </div>
   );
