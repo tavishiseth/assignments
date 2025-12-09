@@ -2,8 +2,7 @@
 
 const { Router } = require("express");
 const adminRouter = Router();
-const { Admin } = require("../db/db");
-const { Course } = require("../db/db");
+const { Admin, Course } = require("../db/db");
 const { z } = require("zod");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");

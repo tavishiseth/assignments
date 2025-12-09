@@ -77,6 +77,7 @@ userRouter.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: "1h" });
+    // Inspect -> Application -> Local Storage
     res.json({ message: "Logged in successfully", token });
 
   } catch (error) {
