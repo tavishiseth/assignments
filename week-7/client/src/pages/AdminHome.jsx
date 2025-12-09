@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from "react";
-import Login from "../components/Login";
-import Register from "../components/Register";
-import Courses from "../components/Courses";
+import AdminLogin from "../components/AdminLogin";
+import AdminRegister from "../components/AdminRegister";
+import AdminCourses from "../components/AdminCourses";
 
-const Home = () => {
+const AdminHome = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("adminToken");
     setIsLoggedIn(!!token);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
     setIsLoggedIn(false);
   };
 
   return (
     <div style={{ border: "1px solid #ccc", padding: "20px" }}>
-      <h2>User Dashboard</h2>
+      <h2>Admin Dashboard</h2>
 
       {isLoggedIn ? (
         <div>
           <button onClick={handleLogout} style={styles.logoutButton}>
             Logout
           </button>
-          <Courses />
+          <AdminCourses />
         </div>
       ) : (
         <div style={styles.authContainer}>
-          <Register />
-          <Login />
+          <AdminRegister />
+          <AdminLogin />
         </div>
       )}
     </div>
@@ -50,4 +50,4 @@ const styles = {
   },
 };
 
-export default Home;
+export default AdminHome;
